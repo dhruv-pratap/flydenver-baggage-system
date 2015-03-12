@@ -1,6 +1,9 @@
-package com.flydenver.baggage.model;
+package com.flydenver.baggage.aggregate;
 
+import com.flydenver.baggage.entity.Flight;
+import com.flydenver.baggage.entity.Node;
 import com.flydenver.baggage.exception.DuplicateFlightException;
+import com.flydenver.baggage.exception.UnknownFlightException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -14,8 +17,8 @@ import static java.lang.System.lineSeparator;
 public class FlightSchedules {
 
     //TODO: Should find a better way to deal with ARRIVAL
-    private static final Flight ARRIVAL_FLIGHT = new Flight("ARRIVAL");
-    private Set<Flight> flights;
+    private static final Flight ARRIVAL_FLIGHT = new Flight("ARRIVAL", new Node("BaggageClaim"), null, null);
+    private final Set<Flight> flights;
 
     private FlightSchedules() {
         this.flights = new HashSet<>();
@@ -34,16 +37,21 @@ public class FlightSchedules {
         return copyOfFlights;
     }
 
-    protected void addFlight(Flight flight) {
+    void addFlight(Flight flight) {
         if(flights.contains(flight)) {
             throw new DuplicateFlightException();
         }
         flights.add(flight);
     }
 
-    public static FlightSchedules parse(List<String> multiLineFormattedInput) {
+    public Flight findFlightById(String flightId) {
+        return flights.stream()
+                .filter(flight -> flight.getId().equals(flightId)).findAny().orElseThrow(UnknownFlightException::new);
+    }
+
+    public static FlightSchedules parse(List<String> multiLineFormattedInput, ConveyorSystem conveyorSystem) {
         FlightSchedules flightSchedules = new FlightSchedules();
-        multiLineFormattedInput.forEach(line -> flightSchedules.addFlight(Flight.parse(line)));
+        multiLineFormattedInput.forEach(line -> flightSchedules.addFlight(Flight.parse(line, conveyorSystem)));
         return flightSchedules;
     }
 

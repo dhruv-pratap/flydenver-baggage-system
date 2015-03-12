@@ -1,28 +1,26 @@
-package com.flydenver.baggage;
+package com.flydenver.baggage.vo;
 
 import com.flydenver.baggage.exception.IncorrectInputException;
-import com.flydenver.baggage.model.Baggages;
-import com.flydenver.baggage.model.ConveyorSystem;
-import com.flydenver.baggage.model.FlightSchedules;
+import com.flydenver.baggage.aggregate.Baggages;
+import com.flydenver.baggage.aggregate.ConveyorSystem;
+import com.flydenver.baggage.aggregate.FlightSchedules;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 /**
  * @author Dhruv Pratap
  */
 public class Input {
 
-    public static final String SECTION_DELIMITER = "# Section:";
+    private static final String SECTION_DELIMITER = "# Section:";
 
     private ConveyorSystem conveyorSystem;
     private FlightSchedules flightSchedules;
     private Baggages baggages;
 
-    public Input(ConveyorSystem conveyorSystem, FlightSchedules flightSchedules, Baggages baggages) {
-        this.conveyorSystem = conveyorSystem;
-        this.flightSchedules = flightSchedules;
-        this.baggages = baggages;
+    private Input() {
     }
 
     public ConveyorSystem getConveyorSystem() {
@@ -47,19 +45,15 @@ public class Input {
             throw new IncorrectInputException("Unexpected number of sections in input. Expecting 3.");
         }
 
-        return new Input(
-                ConveyorSystem.parse(getSectionAsListOfString(sections[1])),
-                FlightSchedules.parse(getSectionAsListOfString(sections[2])),
-                Baggages.parse(getSectionAsListOfString(sections[3]))
-        );
+        Input parsed = new Input();
+        parsed.conveyorSystem = ConveyorSystem.parse(getSectionAsListOfString(sections[1]));
+        parsed.flightSchedules = FlightSchedules.parse(getSectionAsListOfString(sections[2]), parsed.conveyorSystem);
+        parsed.baggages = Baggages.parse(getSectionAsListOfString(sections[3]), parsed.conveyorSystem, parsed.flightSchedules);
+        return parsed;
     }
 
     private static List<String> getSectionAsListOfString(String section) {
         String[] listOfTokens = section.split("\n");
-        List<String> sectionAsListOfString = new ArrayList<String>();
-        for (int i = 1; i < listOfTokens.length; i++) {
-            sectionAsListOfString.add(listOfTokens[i]);
-        }
-        return sectionAsListOfString;
+        return asList(listOfTokens).subList(1, listOfTokens.length);
     }
 }

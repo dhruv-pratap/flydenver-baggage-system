@@ -1,17 +1,17 @@
-package com.flydenver.baggage.model;
+package com.flydenver.baggage.entity;
 
 import com.flydenver.baggage.exception.BagParseException;
-
-import java.util.StringTokenizer;
+import com.flydenver.baggage.aggregate.ConveyorSystem;
+import com.flydenver.baggage.aggregate.FlightSchedules;
 
 /**
  * @author Dhruv Pratap
  */
 public class Bag {
 
-    private Long number;
-    private Node entryPoint;
-    private Flight flight;
+    private final Long number;
+    private final Node entryPoint;
+    private final Flight flight;
 
     public Bag(Long number, Node entryPoint, Flight flight) {
         this.number = number;
@@ -32,32 +32,25 @@ public class Bag {
         return flight;
     }
 
-    public static Bag parse(String formattedString) {
+    public static Bag parse(String formattedString, ConveyorSystem conveyorSystem, FlightSchedules flightSchedules) {
         if (formattedString == null) {
             throw new BagParseException();
         }
 
-        StringTokenizer stringTokenizer = new StringTokenizer(formattedString);
-        if (stringTokenizer.countTokens() != 3) {
+        String[] tokens = formattedString.split(" ");
+        if (tokens.length != 3) {
             throw new BagParseException("Expecting at least 3 tokens");
         }
         return new Bag(
-                Long.valueOf(stringTokenizer.nextToken()),
-                new Node(stringTokenizer.nextToken()),
-                new Flight(stringTokenizer.nextToken())
+                Long.valueOf(tokens[0]),
+                conveyorSystem.findNodeById(tokens[1]),
+                flightSchedules.findFlightById(tokens[2])
         );
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Bag bag = (Bag) o;
-
-        if (!number.equals(bag.number)) return false;
-
-        return true;
+        return this == o || !(o == null || getClass() != o.getClass()) && number.equals(((Bag) o).number);
     }
 
     @Override

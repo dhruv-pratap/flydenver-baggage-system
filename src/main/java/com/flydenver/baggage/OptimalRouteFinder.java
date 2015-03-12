@@ -1,9 +1,9 @@
 package com.flydenver.baggage;
 
-import com.flydenver.baggage.model.ConveyorSystem;
-import com.flydenver.baggage.model.FlightSchedules;
-import com.flydenver.baggage.model.Node;
-import com.flydenver.baggage.model.Route;
+import com.flydenver.baggage.aggregate.ConveyorSystem;
+import com.flydenver.baggage.aggregate.FlightSchedules;
+import com.flydenver.baggage.entity.Bag;
+import com.flydenver.baggage.vo.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,28 +16,26 @@ import static java.util.stream.Collectors.toList;
  */
 public class OptimalRouteFinder {
 
-    private Node source;
-    private Node destination;
-    private ConveyorSystem conveyorSystem;
-    private FlightSchedules flightSchedules;
+    private final Bag bag;
+    private final ConveyorSystem conveyorSystem;
+    private final FlightSchedules flightSchedules;
 
-    public OptimalRouteFinder(Node source, Node destination, ConveyorSystem conveyorSystem, FlightSchedules flightSchedules) {
-        this.source = source;
-        this.destination = destination;
+    public OptimalRouteFinder(Bag bag, ConveyorSystem conveyorSystem, FlightSchedules flightSchedules) {
+        this.bag = bag;
         this.conveyorSystem = conveyorSystem;
         this.flightSchedules = flightSchedules;
     }
 
     public Route findOptimalRoute() {
         List<Route> originatingRoutes = conveyorSystem
-                .findConveyorsOriginatingFrom(source)
-                .map(conveyor -> new Route(conveyor, destination, conveyorSystem, flightSchedules))
+                .findConveyorsOriginatingFrom(bag.getEntryPoint())
+                .map(conveyor -> new Route(conveyor, bag.getFlight().getGate(), conveyorSystem, flightSchedules))
                 .collect(toList());
 
-        originatingRoutes.parallelStream().forEach(Route::findRoute);
+        originatingRoutes.stream().forEach(Route::findRoute);
 
         return fetchAllTraversedRoutes(originatingRoutes)
-                .parallelStream()
+                .stream()
                 .filter(Route::isSuccessPath)
                 .min(comparing(Route::getTotalTravelTime))
                 .get();

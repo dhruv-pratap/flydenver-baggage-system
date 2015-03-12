@@ -1,32 +1,28 @@
-package com.flydenver.baggage.model;
+package com.flydenver.baggage.entity;
 
 import com.flydenver.baggage.exception.FlightParseException;
+import com.flydenver.baggage.aggregate.ConveyorSystem;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
 
 /**
  * @author Dhruv Pratap
  */
 public class Flight {
 
-    private String id;
-    private Node gate;
+    private final String id;
+    private final Node gate;
     //TODO: Is destination a domain object?
-    private String destination;
-    private Date time;
+    private final String destination;
+    private final Date time;
 
     public Flight(String id, Node gate, String destination, Date time) {
         this.id = id;
         this.gate = gate;
         this.destination = destination;
         this.time = time;
-    }
-
-    public Flight(String id) {
-        this.id = id;
     }
 
     public String getId() {
@@ -45,21 +41,21 @@ public class Flight {
         return time;
     }
 
-    public static Flight parse(String formattedString) {
+    public static Flight parse(String formattedString, ConveyorSystem conveyorSystem) {
         if (formattedString == null) {
             throw new FlightParseException();
         }
 
-        StringTokenizer stringTokenizer = new StringTokenizer(formattedString);
-        if (stringTokenizer.countTokens() != 4) {
+        String[] tokens = formattedString.split(" ");
+        if (tokens.length != 4) {
             throw new FlightParseException("Expecting at least 4 tokens");
         }
         try {
             return new Flight(
-                    stringTokenizer.nextToken(),
-                    new Node(stringTokenizer.nextToken()),
-                    stringTokenizer.nextToken(),
-                    new SimpleDateFormat("HH:mm").parse(stringTokenizer.nextToken()));
+                    tokens[0],
+                    conveyorSystem.findNodeById(tokens[1]),
+                    tokens[2],
+                    new SimpleDateFormat("HH:mm").parse(tokens[3]));
         } catch (ParseException e) {
             throw new FlightParseException("Unable to parse flight time. Expected format HH:mm", e);
         }
@@ -67,14 +63,7 @@ public class Flight {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Flight flight = (Flight) o;
-
-        if (!id.equals(flight.id)) return false;
-
-        return true;
+        return this == o || !(o == null || getClass() != o.getClass()) && id.equals(((Flight) o).id);
     }
 
     @Override

@@ -1,5 +1,7 @@
-package com.flydenver.baggage.model;
+package com.flydenver.baggage.aggregate;
 
+import com.flydenver.baggage.entity.Conveyor;
+import com.flydenver.baggage.entity.Node;
 import com.flydenver.baggage.exception.DuplicateConveyerException;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,30 +9,26 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.flydenver.baggage.model.ConveyorSystem.parse;
+import static com.flydenver.baggage.aggregate.ConveyorSystem.parse;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConveyorSystemTest {
 
-    public static final String NODE_A = "A";
-    public static final String NODE_B = "B";
-    public static final String NODE_C = "C";
-    public static final int TRAVEL_TIME = 10;
-    public static final String INPUT_FORMAT = "%s %s %d";
+    private static final String NODE_A = "A";
+    private static final String NODE_B = "B";
+    private static final String NODE_C = "C";
+    private static final int TRAVEL_TIME = 10;
+    private static final String INPUT_FORMAT = "%s %s %d";
 
-    ConveyorSystem conveyorSystem;
+    private ConveyorSystem conveyorSystem;
 
     @Before
     public void setUp() throws Exception {
-        Set<Conveyor> conveyors = new HashSet<Conveyor>();
+        Set<Conveyor> conveyors = new HashSet<>();
         conveyors.add(new Conveyor(new Node(NODE_A), new Node(NODE_B), TRAVEL_TIME));
-
-        Set<Node> nodes = new HashSet<Node>();
-        nodes.add(new Node(NODE_A));
-        nodes.add(new Node(NODE_B));
-        conveyorSystem = new ConveyorSystem(conveyors, nodes);
+        conveyorSystem = new ConveyorSystem(conveyors);
     }
 
     @Test
@@ -58,7 +56,7 @@ public class ConveyorSystemTest {
         Conveyor conveyor = new Conveyor(new Node(NODE_A), new Node(NODE_C), TRAVEL_TIME);
         conveyorSystem.addConveyor(conveyor);
         assertThat(conveyorSystem.getNodes()).hasSize(3);
-        assertThat(conveyorSystem.getConveyors()).hasSize(2);
+        assertThat(conveyorSystem.getConveyors()).hasSize(4);
     }
 
     @Test
@@ -66,7 +64,7 @@ public class ConveyorSystemTest {
         Conveyor conveyor = new Conveyor(new Node(NODE_C), new Node(NODE_B), TRAVEL_TIME);
         conveyorSystem.addConveyor(conveyor);
         assertThat(conveyorSystem.getNodes()).hasSize(3);
-        assertThat(conveyorSystem.getConveyors()).hasSize(2);
+        assertThat(conveyorSystem.getConveyors()).hasSize(4);
     }
 
     @Test
@@ -78,6 +76,6 @@ public class ConveyorSystemTest {
         };
         ConveyorSystem conveyorSystem = parse(asList(multiLineFormattedInput));
         assertThat(conveyorSystem.getNodes()).hasSize(3);
-        assertThat(conveyorSystem.getConveyors()).hasSize(3);
+        assertThat(conveyorSystem.getConveyors()).hasSize(6);
     }
 }

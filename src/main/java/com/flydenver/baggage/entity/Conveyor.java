@@ -1,17 +1,17 @@
-package com.flydenver.baggage.model;
+package com.flydenver.baggage.entity;
 
 import com.flydenver.baggage.exception.ConveyorParseException;
 
-import java.util.StringTokenizer;
+import static java.lang.Integer.valueOf;
 
 /**
  * @author Dhruv Pratap
  */
 public class Conveyor {
 
-    private Node startNode;
-    private Node endNode;
-    private int travelTime;
+    private final Node startNode;
+    private final Node endNode;
+    private final int travelTime;
 
     public Conveyor(Node startNode, Node endNode, int travelTime) {
         this.startNode = startNode;
@@ -36,14 +36,14 @@ public class Conveyor {
             throw new ConveyorParseException();
         }
 
-        StringTokenizer stringTokenizer = new StringTokenizer(formattedString);
-        if (stringTokenizer.countTokens() != 3) {
+        String[] tokens = formattedString.split(" ");
+        if (tokens.length != 3) {
             throw new ConveyorParseException("Expecting at least 3 tokens");
         }
         return new Conveyor(
-                new Node(stringTokenizer.nextToken()),
-                new Node(stringTokenizer.nextToken()),
-                Integer.valueOf(stringTokenizer.nextToken())
+                new Node(tokens[0]),
+                new Node(tokens[1]),
+                valueOf(tokens[2])
         );
     }
 
@@ -52,13 +52,8 @@ public class Conveyor {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Conveyor conveyor = (Conveyor) o;
-
-        if (!endNode.equals(conveyor.endNode)) return false;
-        if (!startNode.equals(conveyor.startNode)) return false;
-
-        return true;
+        return endNode.equals(conveyor.endNode) && startNode.equals(conveyor.startNode);
     }
 
     @Override

@@ -1,11 +1,11 @@
-package com.flydenver.baggage.model;
+package com.flydenver.baggage.entity;
 
 /**
  * @author Dhruv Pratap
  */
 public class Node {
 
-    private String id;
+    private final String id;
 
     public Node(String id) {
         this.id = id;
@@ -17,14 +17,7 @@ public class Node {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Node node = (Node) o;
-
-        if (!id.equals(node.id)) return false;
-
-        return true;
+        return this == o || !(o == null || getClass() != o.getClass()) && id.equals(((Node) o).id);
     }
 
     @Override

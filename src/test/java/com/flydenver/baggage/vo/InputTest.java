@@ -1,14 +1,14 @@
-package com.flydenver.baggage;
+package com.flydenver.baggage.vo;
 
 import com.flydenver.baggage.exception.IncorrectInputException;
 import org.junit.Test;
 
-import static com.flydenver.baggage.Input.parse;
+import static com.flydenver.baggage.vo.Input.parse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class InputTest {
 
-    public static final String INPUT_STRING =
+    private static final String INPUT_STRING =
             "# Section: Conveyer System\n" +
             "A5 A1 6\n" +
             "A1 A2 10\n" +

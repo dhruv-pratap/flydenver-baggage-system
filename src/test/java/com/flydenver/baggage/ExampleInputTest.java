@@ -1,16 +1,19 @@
 package com.flydenver.baggage;
 
-import com.flydenver.baggage.model.*;
+import com.flydenver.baggage.aggregate.Baggages;
+import com.flydenver.baggage.aggregate.ConveyorSystem;
+import com.flydenver.baggage.aggregate.FlightSchedules;
+import com.flydenver.baggage.vo.Input;
 import org.junit.Test;
 
-import static com.flydenver.baggage.Input.parse;
+import static com.flydenver.baggage.vo.Input.parse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Dhruv Pratap
  */
 public class ExampleInputTest {
-    public static final String EXAMPLE_INPUT_STRING =
+    private static final String EXAMPLE_INPUT_STRING =
                     "# Section: Conveyor System\n" +
                     "Concourse_A_Ticketing A5 5\n" +
                     "A5 BaggageClaim 5\n" +
@@ -56,8 +59,9 @@ public class ExampleInputTest {
         System.out.println(baggages);
         assertThat(baggages).isNotNull();
 
-        OptimalRouteFinder optimalRouteFinder = new OptimalRouteFinder(new Node("A5"), new Node("A4"), conveyorSystem, flightSchedules);
-        Route optimalRoute = optimalRouteFinder.findOptimalRoute();
-        System.out.println("optimalRoute = " + optimalRoute);
+        baggages.getBags().stream()
+                .map(bag -> new OptimalRouteFinder(bag, conveyorSystem, flightSchedules))
+                .map(OptimalRouteFinder::findOptimalRoute)
+                .forEach(optimalRoute -> System.out.println("optimalRoute = " + optimalRoute));
     }
 }

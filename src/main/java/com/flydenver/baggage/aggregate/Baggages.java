@@ -1,5 +1,6 @@
-package com.flydenver.baggage.model;
+package com.flydenver.baggage.aggregate;
 
+import com.flydenver.baggage.entity.Bag;
 import com.flydenver.baggage.exception.DuplicateBagException;
 
 import java.util.HashSet;
@@ -13,9 +14,9 @@ import static java.lang.System.lineSeparator;
  */
 public class Baggages {
 
-    private Set<Bag> bags;
+    private final Set<Bag> bags;
 
-    public Baggages() {
+    private Baggages() {
         this.bags = new HashSet<>();
     }
 
@@ -30,16 +31,16 @@ public class Baggages {
         return copyOfBags;
     }
 
-    protected void addBag(Bag bag) {
+    void addBag(Bag bag) {
         if (bags.contains(bag)) {
             throw new DuplicateBagException();
         }
         bags.add(bag);
     }
 
-    public static Baggages parse(List<String> multiLineFormattedInput) {
+    public static Baggages parse(List<String> multiLineFormattedInput, ConveyorSystem conveyorSystem, FlightSchedules flightSchedules) {
         Baggages baggages = new Baggages();
-        multiLineFormattedInput.forEach(line -> baggages.addBag(Bag.parse(line)));
+        multiLineFormattedInput.forEach(line -> baggages.addBag(Bag.parse(line, conveyorSystem, flightSchedules)));
         return baggages;
     }
 

@@ -1,6 +1,9 @@
-package com.flydenver.baggage.model;
+package com.flydenver.baggage.aggregate;
 
+import com.flydenver.baggage.entity.Conveyor;
+import com.flydenver.baggage.entity.Node;
 import com.flydenver.baggage.exception.DuplicateConveyerException;
+import com.flydenver.baggage.exception.UnknownNodeException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -14,19 +17,19 @@ import static java.lang.System.lineSeparator;
  */
 public class ConveyorSystem {
 
-    private Set<Node> nodes;
-    private Set<Conveyor> conveyors;
+    private final Set<Node> nodes;
+    private final Set<Conveyor> conveyors;
 
     private ConveyorSystem() {
         this.nodes = new HashSet<>();
         this.conveyors = new HashSet<>();
     }
 
-    public ConveyorSystem(Set<Conveyor> conveyors, Set<Node> nodes) {
+    public ConveyorSystem(Set<Conveyor> conveyors) {
         this.nodes = new HashSet<>();
         this.nodes.addAll(nodes);
         this.conveyors = new HashSet<>();
-        this.conveyors.addAll(conveyors);
+        conveyors.forEach(this::addConveyor);
     }
 
     public Set<Conveyor> getConveyors() {
@@ -41,7 +44,11 @@ public class ConveyorSystem {
         return copyOfNodes;
     }
 
-    protected void addConveyor(Conveyor conveyor) {
+    public Node findNodeById(String nodeId) {
+        return nodes.stream().filter(node -> node.getId().equals(nodeId)).findAny().orElseThrow(UnknownNodeException::new);
+    }
+
+    void addConveyor(Conveyor conveyor) {
         if(conveyors.contains(conveyor)) {
             throw new DuplicateConveyerException();
         }
@@ -66,7 +73,7 @@ public class ConveyorSystem {
     }
 
     public Stream<Conveyor> findConveyorsOriginatingFrom(final Node node) {
-        return conveyors.parallelStream().filter(conveyor -> conveyor.getStartNode().equals(node));
+        return conveyors.stream().filter(conveyor -> conveyor.getStartNode().equals(node));
     }
 
 }

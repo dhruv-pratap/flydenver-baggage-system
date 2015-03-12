@@ -1,4 +1,9 @@
-package com.flydenver.baggage.model;
+package com.flydenver.baggage.vo;
+
+import com.flydenver.baggage.aggregate.ConveyorSystem;
+import com.flydenver.baggage.aggregate.FlightSchedules;
+import com.flydenver.baggage.entity.Conveyor;
+import com.flydenver.baggage.entity.Node;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,14 +15,14 @@ import java.util.Set;
  */
 public class Route {
 
-    private Conveyor currentConveyor;
+    private final Conveyor currentConveyor;
     private final Node destination;
     private final ConveyorSystem conveyorSystem;
     private final FlightSchedules flightSchedules;
 
-    private Set<Node> traversedNodes = new HashSet<>();
-    private List<Conveyor> traversedConveyors = new ArrayList<>();
-    private List<Route> routes = new ArrayList<>();
+    private final Set<Node> traversedNodes = new HashSet<>();
+    private final List<Conveyor> traversedConveyors = new ArrayList<>();
+    private final List<Route> routes = new ArrayList<>();
     private boolean successPath;
     private int totalTravelTime = 0;
 
@@ -70,9 +75,7 @@ public class Route {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         traversedConveyors.forEach(conveyor -> builder.append(conveyor.getStartNode()).append(" "));
-        builder.append(traversedConveyors.get(traversedConveyors.size() - 1).getEndNode());
-        builder.append(" : ");
-        builder.append(totalTravelTime);
+        builder.append(traversedConveyors.get(traversedConveyors.size() - 1).getEndNode()).append(" : ").append(totalTravelTime);
         return builder.toString();
     }
 }

@@ -1,17 +1,17 @@
-package com.flydenver.baggage.model;
+package com.flydenver.baggage.entity;
 
 import com.flydenver.baggage.exception.ConveyorParseException;
 import org.junit.Test;
 
-import static com.flydenver.baggage.model.Conveyor.parse;
+import static com.flydenver.baggage.entity.Conveyor.parse;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConveyorTest {
 
-    private static String START_NODE = "A5";
-    private static String END_NODE = "A10";
-    private static int TRAVEL_TIME = 4;
+    private static final String START_NODE = "A5";
+    private static final String END_NODE = "A10";
+    private static final int TRAVEL_TIME = 4;
 
     @Test
     public void shouldParseFormattedStringIntoConveyerObject() throws Exception {
