@@ -23,7 +23,7 @@ public class Route {
     private final Set<Node> traversedNodes = new HashSet<>();
     private final List<Conveyor> traversedConveyors = new ArrayList<>();
     private final List<Route> routes = new ArrayList<>();
-    private boolean successPath;
+    private boolean destinationDiscovered;
     private int totalTravelTime = 0;
 
     public Route(Conveyor currentConveyor, Node destination, ConveyorSystem conveyorSystem, FlightSchedules flightSchedules) {
@@ -33,8 +33,8 @@ public class Route {
         this.flightSchedules = flightSchedules;
     }
 
-    public boolean isSuccessPath() {
-        return successPath;
+    public boolean isDestinationDiscovered() {
+        return destinationDiscovered;
     }
 
     public List<Route> getChildRoutes() {
@@ -45,7 +45,7 @@ public class Route {
         return totalTravelTime;
     }
 
-    public void findRoute() {
+    public void discover() {
         traversedConveyors.add(currentConveyor);
         traversedNodes.add(currentConveyor.getStartNode());
         Node endNode = currentConveyor.getEndNode();
@@ -53,21 +53,21 @@ public class Route {
         totalTravelTime += currentConveyor.getTravelTime();
 
         if (endNode.equals(destination)) {
-            successPath = true;
+            destinationDiscovered = true;
         } else {
             conveyorSystem
                     .findConveyorsOriginatingFrom(endNode)
                     .filter(c -> !traversedNodes.contains(c.getEndNode()))
-                    .forEach(this::forkNewRoute);
+                    .forEach(this::fork);
         }
     }
 
-    private void forkNewRoute(Conveyor conveyor) {
+    private void fork(Conveyor conveyor) {
         Route route = new Route(conveyor, destination, conveyorSystem, flightSchedules);
         route.totalTravelTime = totalTravelTime;
         route.traversedNodes.addAll(traversedNodes);
         route.traversedConveyors.addAll(traversedConveyors);
-        route.findRoute();
+        route.discover();
         routes.add(route);
     }
 

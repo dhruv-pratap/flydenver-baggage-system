@@ -32,11 +32,11 @@ public class OptimalRouteFinder {
                 .map(conveyor -> new Route(conveyor, bag.getFlight().getGate(), conveyorSystem, flightSchedules))
                 .collect(toList());
 
-        originatingRoutes.stream().forEach(Route::findRoute);
+        originatingRoutes.stream().forEach(Route::discover);
 
         return fetchAllTraversedRoutes(originatingRoutes)
                 .stream()
-                .filter(Route::isSuccessPath)
+                .filter(Route::isDestinationDiscovered)
                 .min(comparing(Route::getTotalTravelTime))
                 .get();
     }
