@@ -1,20 +1,20 @@
-package com.flydenver.baggage;
+package com.flydenver.baggage.vo;
 
-import com.flydenver.baggage.aggregate.Baggages;
-import com.flydenver.baggage.aggregate.ConveyorSystem;
-import com.flydenver.baggage.aggregate.FlightSchedules;
-import com.flydenver.baggage.vo.Input;
 import org.junit.Test;
 
+import java.util.List;
+
 import static com.flydenver.baggage.vo.Input.parse;
+import static java.util.stream.IntStream.range;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Dhruv Pratap
  */
-public class ExampleInputTest {
+public class OutputTest {
+
     private static final String EXAMPLE_INPUT_STRING =
-                    "# Section: Conveyor System\n" +
+            "# Section: Conveyor System\n" +
                     "Concourse_A_Ticketing A5 5\n" +
                     "A5 BaggageClaim 5\n" +
                     "A5 A10 4\n" +
@@ -43,25 +43,28 @@ public class ExampleInputTest {
                     "0004 A8 UA18\n" +
                     "0005 A7 ARRIVAL\n";
 
+    private static final String[] EXPECTED_OUTPUT = new String[]{
+            "Concourse_A_Ticketing A5 A1 : 11",
+            "A5 A1 A2 A3 A4 : 9",
+            "A2 A1 : 1",
+            "A8 A9 A10 A5 : 6",
+            "A7 A8 A9 A10 A5 BaggageClaim : 12"
+    };
+
     @Test
-    public void shouldParseValidInputString() throws Exception {
+    public void shouldProcessInputToGetOptimalRoutes() throws Exception {
+
         Input input = parse(EXAMPLE_INPUT_STRING);
 
-        ConveyorSystem conveyorSystem = input.getConveyorSystem();
-        System.out.println(conveyorSystem);
-        assertThat(conveyorSystem).isNotNull();
+        assertThat(input.getConveyorSystem()).isNotNull();
+        assertThat(input.getFlightSchedules()).isNotNull();
+        assertThat(input.getBaggages()).isNotNull();
 
-        FlightSchedules flightSchedules = input.getFlightSchedules();
-        System.out.println(flightSchedules);
-        assertThat(flightSchedules).isNotNull();
+        Output output = new Output(input);
+        List<Route> optimalRoutes = output.getOptimalRoutes();
+        output.printOptimalRoutes();
 
-        Baggages baggages = input.getBaggages();
-        System.out.println(baggages);
-        assertThat(baggages).isNotNull();
-
-        baggages.getBags().stream()
-                .map(bag -> new OptimalRouteFinder(bag, conveyorSystem, flightSchedules))
-                .map(OptimalRouteFinder::findOptimalRoute)
-                .forEach(optimalRoute -> System.out.println("optimalRoute = " + optimalRoute));
+        range(0, input.getBaggages().getBags().size())
+                .forEach(i -> assertThat(optimalRoutes.get(i).toString()).isEqualTo(EXPECTED_OUTPUT[i]));
     }
 }

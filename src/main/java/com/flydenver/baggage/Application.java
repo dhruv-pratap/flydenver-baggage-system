@@ -1,9 +1,7 @@
 package com.flydenver.baggage;
 
-import com.flydenver.baggage.aggregate.Baggages;
-import com.flydenver.baggage.aggregate.ConveyorSystem;
-import com.flydenver.baggage.aggregate.FlightSchedules;
 import com.flydenver.baggage.vo.Input;
+import com.flydenver.baggage.vo.Output;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -31,18 +29,6 @@ public class Application {
             return;
         }
 
-        ConveyorSystem conveyorSystem = input.getConveyorSystem();
-        System.out.println(conveyorSystem);
-
-        FlightSchedules flightSchedules = input.getFlightSchedules();
-        System.out.println(flightSchedules);
-
-        Baggages baggages = input.getBaggages();
-        System.out.println(baggages);
-
-        baggages.getBags().stream()
-                .map(bag -> new OptimalRouteFinder(bag, conveyorSystem, flightSchedules))
-                .map(OptimalRouteFinder::findOptimalRoute)
-                .forEach(optimalRoute -> System.out.println("Optimal Route => " + optimalRoute));
+        new Output(input).printOptimalRoutes();
     }
 }

@@ -3,6 +3,7 @@ package com.flydenver.baggage.aggregate;
 import com.flydenver.baggage.entity.Conveyor;
 import com.flydenver.baggage.entity.Node;
 import com.flydenver.baggage.exception.DuplicateConveyerException;
+import com.flydenver.baggage.exception.UnknownNodeException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -77,5 +78,15 @@ public class ConveyorSystemTest {
         ConveyorSystem conveyorSystem = parse(asList(multiLineFormattedInput));
         assertThat(conveyorSystem.getNodes()).hasSize(3);
         assertThat(conveyorSystem.getConveyors()).hasSize(6);
+    }
+
+    @Test(expected = UnknownNodeException.class)
+    public void shouldThrowExceptionWhenCannotFindNode() throws Exception {
+        conveyorSystem.findNodeById("X");
+    }
+
+    @Test
+    public void shouldReturnAnExistingNodeWhenExists() throws Exception {
+        assertThat(conveyorSystem.findNodeById("A")).isNotNull().isEqualTo(new Node(NODE_A));
     }
 }

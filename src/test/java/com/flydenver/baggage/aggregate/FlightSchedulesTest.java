@@ -4,6 +4,7 @@ import com.flydenver.baggage.entity.Conveyor;
 import com.flydenver.baggage.entity.Flight;
 import com.flydenver.baggage.entity.Node;
 import com.flydenver.baggage.exception.DuplicateFlightException;
+import com.flydenver.baggage.exception.UnknownFlightException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,5 +63,15 @@ public class FlightSchedulesTest {
         };
         FlightSchedules flightSchedules = parse(asList(multiLineFormattedInput), conveyorSystem);
         assertThat(flightSchedules.getFlights()).hasSize(2);
+    }
+
+    @Test(expected = UnknownFlightException.class)
+    public void shouldThrowExceptionWhenCannotFindFlight() throws Exception {
+        flightSchedules.findFlightById("X");
+    }
+
+    @Test
+    public void shouldReturnAnExistingFlightWhenExists() throws Exception {
+        assertThat(flightSchedules.findFlightById("UA10")).isNotNull();
     }
 }
