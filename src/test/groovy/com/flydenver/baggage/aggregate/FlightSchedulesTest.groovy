@@ -11,7 +11,6 @@ import org.junit.Test
 import java.text.SimpleDateFormat
 
 import static com.flydenver.baggage.aggregate.FlightSchedules.parse
-import static java.lang.String.format
 import static org.assertj.core.api.Assertions.assertThat
 
 class FlightSchedulesTest {
@@ -20,7 +19,6 @@ class FlightSchedulesTest {
     def FLIGHT_GATE = "A1"
     def FLIGHT_DESTINATION = "JFK"
     def FLIGHT_TIME = "08:00"
-    def INPUT_FORMAT = "%s %s %s %s"
     def ENTRY_POINT = "A10"
 
     def flightDateTime
@@ -42,14 +40,12 @@ class FlightSchedulesTest {
 
     @Test(expected = DuplicateFlightException.class)
     void shouldThrowExceptionWhenDuplicateFlightInformationIsAdded() throws Exception {
-        def flight = new Flight(FLIGHT_ID, new Node(FLIGHT_GATE), FLIGHT_DESTINATION, flightDateTime)
-        flightSchedules.addFlight(flight)
+        flightSchedules.addFlight(new Flight(FLIGHT_ID, new Node(FLIGHT_GATE), FLIGHT_DESTINATION, flightDateTime))
     }
 
     @Test
     void shouldParseMultiLineFormattedInput() throws Exception {
-        def multiLineFormattedInput = [format(INPUT_FORMAT, FLIGHT_ID, FLIGHT_GATE, FLIGHT_DESTINATION, FLIGHT_TIME)]
-        def flightSchedules = parse(multiLineFormattedInput, conveyorSystem)
+        def flightSchedules = parse(["$FLIGHT_ID $FLIGHT_GATE $FLIGHT_DESTINATION $FLIGHT_TIME" as String], conveyorSystem)
         assertThat(flightSchedules.getFlights()).hasSize(2)
     }
 

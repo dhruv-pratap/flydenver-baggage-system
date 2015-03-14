@@ -1,4 +1,5 @@
 package com.flydenver.baggage.aggregate
+
 import com.flydenver.baggage.entity.Conveyor
 import com.flydenver.baggage.entity.Node
 import com.flydenver.baggage.exception.DuplicateConveyerException
@@ -7,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 
 import static com.flydenver.baggage.aggregate.ConveyorSystem.parse
-import static java.lang.String.format
 import static org.assertj.core.api.Assertions.assertThat
 
 class ConveyorSystemTest {
@@ -16,7 +16,6 @@ class ConveyorSystemTest {
     def NODE_B = "B"
     def NODE_C = "C"
     def TRAVEL_TIME = 10
-    def INPUT_FORMAT = "%s %s %d"
 
     def conveyorSystem
 
@@ -58,12 +57,11 @@ class ConveyorSystemTest {
 
     @Test
     void shouldParseMultiLineFormattedInput() throws Exception {
-        def multiLineFormattedInput = [
-            format(INPUT_FORMAT, NODE_A, NODE_B, TRAVEL_TIME),
-            format(INPUT_FORMAT, NODE_A, NODE_C, TRAVEL_TIME),
-            format(INPUT_FORMAT, NODE_B, NODE_C, TRAVEL_TIME)
-        ]
-        def conveyorSystem = parse(multiLineFormattedInput)
+        def conveyorSystem = parse([
+            "$NODE_A $NODE_B $TRAVEL_TIME" as String,
+            "$NODE_A $NODE_C $TRAVEL_TIME" as String,
+            "$NODE_B $NODE_C $TRAVEL_TIME" as String
+        ])
         assertThat(conveyorSystem.getNodes()).hasSize(3)
         assertThat(conveyorSystem.getConveyors()).hasSize(6)
     }

@@ -7,8 +7,6 @@ import org.junit.Before
 import org.junit.Test
 
 import static com.flydenver.baggage.entity.Bag.parse
-import static java.lang.Long.valueOf
-import static java.lang.String.format
 import static org.assertj.core.api.Assertions.assertThat
 
 class BagTest {
@@ -29,20 +27,20 @@ class BagTest {
 
     @Test
     void shouldParseFormattedStringIntoBagObject() throws Exception {
-        def bag = parse(format("%s %s %s", BAG_NUMBER, ENTRY_POINT, FLIGHT_ID), conveyorSystem, flightSchedules)
-        assertThat(bag.getNumber()).isEqualTo(valueOf(BAG_NUMBER))
+        def bag = parse("$BAG_NUMBER $ENTRY_POINT $FLIGHT_ID", conveyorSystem, flightSchedules)
+        assertThat(bag.getNumber()).isEqualTo(BAG_NUMBER.toLong())
         assertThat(bag.getEntryPoint().getId()).isEqualTo(ENTRY_POINT)
         assertThat(bag.getFlight().getId()).isEqualTo(FLIGHT_ID)
     }
 
     @Test(expected = BagParseException.class)
     void shouldThrowParseExceptionForMoreNumberOfTokens() throws Exception {
-        parse(format("%s %s %s 10", BAG_NUMBER, ENTRY_POINT, FLIGHT_ID), conveyorSystem, flightSchedules)
+        parse("$BAG_NUMBER $ENTRY_POINT $FLIGHT_ID 10", conveyorSystem, flightSchedules)
     }
 
     @Test(expected = BagParseException.class)
     void shouldThrowParseExceptionForLessNumberOfTokens() throws Exception {
-        parse(format("%s %s", BAG_NUMBER, ENTRY_POINT), conveyorSystem, flightSchedules)
+        parse("$BAG_NUMBER $ENTRY_POINT", conveyorSystem, flightSchedules)
     }
 
     @Test(expected = BagParseException.class)

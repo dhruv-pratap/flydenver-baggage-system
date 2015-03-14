@@ -8,7 +8,6 @@ import org.junit.Test
 import java.text.SimpleDateFormat
 
 import static com.flydenver.baggage.entity.Flight.parse
-import static java.lang.String.format
 import static org.assertj.core.api.Assertions.assertThat
 
 class FlightTest {
@@ -28,7 +27,7 @@ class FlightTest {
 
     @Test
     void shouldParseFormattedStringIntoFlightObject() throws Exception {
-        def flight = parse(format("%s %s %s %s", FLIGHT_ID, FLIGHT_GATE, FLIGHT_DESTINATION, FLIGHT_TIME), conveyorSystem)
+        def flight = parse("$FLIGHT_ID $FLIGHT_GATE $FLIGHT_DESTINATION $FLIGHT_TIME", conveyorSystem)
         assertThat(flight.getId()).isEqualTo(FLIGHT_ID)
         assertThat(flight.getGate().getId()).isEqualTo(FLIGHT_GATE)
         assertThat(flight.getDestination()).isEqualTo(FLIGHT_DESTINATION)
@@ -37,12 +36,12 @@ class FlightTest {
 
     @Test(expected = FlightParseException.class)
     void shouldThrowParseExceptionForMoreNumberOfTokens() throws Exception {
-        parse(format("%s %s %s %s 10", FLIGHT_ID, FLIGHT_GATE, FLIGHT_DESTINATION, FLIGHT_TIME), conveyorSystem)
+        parse("$FLIGHT_ID $FLIGHT_GATE $FLIGHT_DESTINATION $FLIGHT_TIME 10", conveyorSystem)
     }
 
     @Test(expected = FlightParseException.class)
     void shouldThrowParseExceptionForLessNumberOfTokens() throws Exception {
-        parse(format("%s %s %s", FLIGHT_ID, FLIGHT_GATE, FLIGHT_DESTINATION), conveyorSystem)
+        parse("$FLIGHT_ID $FLIGHT_GATE $FLIGHT_DESTINATION", conveyorSystem)
     }
 
     @Test(expected = FlightParseException.class)
