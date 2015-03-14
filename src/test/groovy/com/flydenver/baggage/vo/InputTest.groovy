@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class InputTest {
 
     def INPUT_STRING =
-            "# Section: Conveyer System\n" +
+            "# Section: Conveyor System\n" +
                     "A5 A1 6\n" +
                     "A1 A2 10\n" +
                     "# Section: Departures\n" +
@@ -36,7 +36,7 @@ class InputTest {
     @Test(expected = IncorrectInputException.class)
     void shouldThrowExceptionForLessThanThreeSection() throws Exception {
         def inputString =
-                "# Section: Conveyer System\n" +
+                "# Section: Conveyor System\n" +
                         "A5 A1 6\n" +
                         "A1 A2 10\n" +
                         "# Section: Departures\n" +

@@ -1,19 +1,13 @@
-package com.flydenver.baggage.vo;
+package com.flydenver.baggage.vo
 
-import org.junit.Test;
+import org.junit.Test
 
-import java.util.List;
+import static com.flydenver.baggage.vo.Input.parse
+import static org.assertj.core.api.Assertions.assertThat
 
-import static com.flydenver.baggage.vo.Input.parse;
-import static java.util.stream.IntStream.range;
-import static org.assertj.core.api.Assertions.assertThat;
+class OutputTest {
 
-/**
- * @author Dhruv Pratap
- */
-public class OutputTest {
-
-    private static final String EXAMPLE_INPUT_STRING =
+    def EXAMPLE_INPUT_STRING =
             "# Section: Conveyor System\n" +
                     "Concourse_A_Ticketing A5 5\n" +
                     "A5 BaggageClaim 5\n" +
@@ -41,30 +35,29 @@ public class OutputTest {
                     "0002 A5 UA17\n" +
                     "0003 A2 UA10\n" +
                     "0004 A8 UA18\n" +
-                    "0005 A7 ARRIVAL\n";
+                    "0005 A7 ARRIVAL\n"
 
-    private static final String[] EXPECTED_OUTPUT = new String[]{
+    def EXPECTED_OUTPUT = [
             "Concourse_A_Ticketing A5 A1 : 11",
             "A5 A1 A2 A3 A4 : 9",
             "A2 A1 : 1",
             "A8 A9 A10 A5 : 6",
             "A7 A8 A9 A10 A5 BaggageClaim : 12"
-    };
+    ]
 
     @Test
-    public void shouldProcessInputToGetOptimalRoutes() throws Exception {
+    void shouldProcessInputToGetOptimalRoutes() throws Exception {
+        def input = parse(EXAMPLE_INPUT_STRING)
+        assertThat(input.getConveyorSystem()).isNotNull()
+        assertThat(input.getFlightSchedules()).isNotNull()
+        assertThat(input.getBaggages()).isNotNull()
 
-        Input input = parse(EXAMPLE_INPUT_STRING);
+        def output = new Output(input)
+        def optimalRoutes = output.getOptimalRoutes()
+        output.printOptimalRoutes()
 
-        assertThat(input.getConveyorSystem()).isNotNull();
-        assertThat(input.getFlightSchedules()).isNotNull();
-        assertThat(input.getBaggages()).isNotNull();
-
-        Output output = new Output(input);
-        List<Route> optimalRoutes = output.getOptimalRoutes();
-        output.printOptimalRoutes();
-
-        range(0, input.getBaggages().getBags().size())
-                .forEach(i -> assertThat(optimalRoutes.get(i).toString()).isEqualTo(EXPECTED_OUTPUT[i]));
+        input.getBaggages().getBags().size().times {
+            assertThat(optimalRoutes[it].toString()).isEqualTo(EXPECTED_OUTPUT[it])
+        }
     }
 }
