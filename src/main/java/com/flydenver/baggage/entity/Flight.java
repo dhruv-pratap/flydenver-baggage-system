@@ -12,11 +12,14 @@ import java.util.Date;
  */
 public class Flight {
 
-    private final String id;
-    private final Node gate;
+    private String id;
+    private Node gate;
     //TODO: Is destination a domain object?
-    private final String destination;
-    private final Date time;
+    private String destination;
+    private Date time;
+
+    private Flight() {
+    }
 
     public Flight(String id, Node gate, String destination, Date time) {
         this.id = id;
