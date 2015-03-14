@@ -26,25 +26,25 @@ class BaggagesTest {
     def flightSchedules
 
     @Before
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         baggages = new Baggages([new Bag(valueOf(BAG_NUMBER), new Node(ENTRY_POINT), new Flight(id: FLIGHT_ID))] as Set)
         conveyorSystem = new ConveyorSystem([new Conveyor(new Node(ENTRY_POINT), new Node(FLIGHT_GATE), 10)] as Set)
         flightSchedules = new FlightSchedules([new Flight(FLIGHT_ID, new Node(FLIGHT_GATE), "JFK", new Date())] as Set)
     }
 
     @Test
-    public void shouldHaveImmutableFlightSet() throws Exception {
+    void shouldHaveImmutableFlightSet() throws Exception {
         baggages.getBags().clear()
         assertThat(baggages.getBags()).isNotNull().isNotEmpty()
     }
 
     @Test(expected = DuplicateBagException.class)
-    public void shouldThrowExceptionWhenDuplicateBagInformationIsAdded() throws Exception {
+    void shouldThrowExceptionWhenDuplicateBagInformationIsAdded() throws Exception {
         baggages.addBag(new Bag(valueOf(BAG_NUMBER), new Node(ENTRY_POINT), new Flight(id: FLIGHT_ID)))
     }
 
     @Test
-    public void shouldParseMultiLineFormattedInput() throws Exception {
+    void shouldParseMultiLineFormattedInput() throws Exception {
         def multiLineFormattedInput = [format(INPUT_FORMAT, BAG_NUMBER, ENTRY_POINT, FLIGHT_ID)]
         def baggages = parse(multiLineFormattedInput, conveyorSystem, flightSchedules)
         assertThat(baggages.getBags()).hasSize(1)

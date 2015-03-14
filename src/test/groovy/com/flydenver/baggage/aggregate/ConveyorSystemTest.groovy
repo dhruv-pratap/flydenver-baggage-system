@@ -21,43 +21,43 @@ class ConveyorSystemTest {
     def conveyorSystem
 
     @Before
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         conveyorSystem = new ConveyorSystem([new Conveyor(new Node(NODE_A), new Node(NODE_B), TRAVEL_TIME)] as Set)
     }
 
     @Test
-    public void shouldHaveImmutableConveyorSet() throws Exception {
+    void shouldHaveImmutableConveyorSet() throws Exception {
         conveyorSystem.getConveyors().clear()
         assertThat(conveyorSystem.getConveyors()).isNotNull().isNotEmpty()
     }
 
     @Test
-    public void shouldHaveImmutableNodeSet() throws Exception {
+    void shouldHaveImmutableNodeSet() throws Exception {
         conveyorSystem.getNodes().clear()
         assertThat(conveyorSystem.getNodes()).isNotNull().isNotEmpty()
     }
 
     @Test(expected = DuplicateConveyerException.class)
-    public void shouldThrowExceptionWheDuplicateConveyorInformationIsAdded() throws Exception {
+    void shouldThrowExceptionWheDuplicateConveyorInformationIsAdded() throws Exception {
         conveyorSystem.addConveyor(new Conveyor(new Node(NODE_A), new Node(NODE_B), TRAVEL_TIME))
     }
 
     @Test
-    public void shouldAllowToAddConveyorWithExistingSourceButDifferentDestination() throws Exception {
+    void shouldAllowToAddConveyorWithExistingSourceButDifferentDestination() throws Exception {
         conveyorSystem.addConveyor(new Conveyor(new Node(NODE_A), new Node(NODE_C), TRAVEL_TIME))
         assertThat(conveyorSystem.getNodes()).hasSize(3)
         assertThat(conveyorSystem.getConveyors()).hasSize(4)
     }
 
     @Test
-    public void shouldAllowToAddConveyorWithDifferentSourceButExistingDestination() throws Exception {
+    void shouldAllowToAddConveyorWithDifferentSourceButExistingDestination() throws Exception {
         conveyorSystem.addConveyor(new Conveyor(new Node(NODE_C), new Node(NODE_B), TRAVEL_TIME))
         assertThat(conveyorSystem.getNodes()).hasSize(3)
         assertThat(conveyorSystem.getConveyors()).hasSize(4)
     }
 
     @Test
-    public void shouldParseMultiLineFormattedInput() throws Exception {
+    void shouldParseMultiLineFormattedInput() throws Exception {
         def multiLineFormattedInput = [
             format(INPUT_FORMAT, NODE_A, NODE_B, TRAVEL_TIME),
             format(INPUT_FORMAT, NODE_A, NODE_C, TRAVEL_TIME),
@@ -69,12 +69,12 @@ class ConveyorSystemTest {
     }
 
     @Test(expected = UnknownNodeException.class)
-    public void shouldThrowExceptionWhenCannotFindNode() throws Exception {
+    void shouldThrowExceptionWhenCannotFindNode() throws Exception {
         conveyorSystem.findNodeById("X")
     }
 
     @Test
-    public void shouldReturnAnExistingNodeWhenExists() throws Exception {
+    void shouldReturnAnExistingNodeWhenExists() throws Exception {
         assertThat(conveyorSystem.findNodeById("A")).isNotNull().isEqualTo(new Node(NODE_A))
     }
 }

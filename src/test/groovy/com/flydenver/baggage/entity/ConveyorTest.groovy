@@ -14,7 +14,7 @@ class ConveyorTest {
     def TRAVEL_TIME = 4
 
     @Test
-    public void shouldParseFormattedStringIntoConveyerObject() throws Exception {
+    void shouldParseFormattedStringIntoConveyerObject() throws Exception {
         def conveyor = parse(format("%s %s %d", START_NODE, END_NODE, TRAVEL_TIME))
         assertThat(conveyor.getStartNode().getId()).isEqualTo(START_NODE)
         assertThat(conveyor.getEndNode().getId()).isEqualTo(END_NODE)
@@ -22,17 +22,17 @@ class ConveyorTest {
     }
 
     @Test(expected = ConveyorParseException.class)
-    public void shouldThrowParseExceptionForMoreNumberOfTokens() throws Exception {
+    void shouldThrowParseExceptionForMoreNumberOfTokens() throws Exception {
         parse(format("%s %s %d 10", START_NODE, END_NODE, TRAVEL_TIME))
     }
 
     @Test(expected = ConveyorParseException.class)
-    public void shouldThrowParseExceptionForLessNumberOfTokens() throws Exception {
+    void shouldThrowParseExceptionForLessNumberOfTokens() throws Exception {
         parse(format("%s %s", START_NODE, END_NODE))
     }
 
     @Test(expected = ConveyorParseException.class)
-    public void shouldThrowParseExceptionForNullInput() throws Exception {
+    void shouldThrowParseExceptionForNullInput() throws Exception {
         parse(null)
     }
 }
