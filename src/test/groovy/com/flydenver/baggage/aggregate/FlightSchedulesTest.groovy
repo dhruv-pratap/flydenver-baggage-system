@@ -1,4 +1,5 @@
 package com.flydenver.baggage.aggregate
+
 import com.flydenver.baggage.entity.Conveyor
 import com.flydenver.baggage.entity.Flight
 import com.flydenver.baggage.entity.Node

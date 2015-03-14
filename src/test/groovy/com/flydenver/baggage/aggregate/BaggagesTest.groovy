@@ -15,11 +15,11 @@ import static org.assertj.core.api.Assertions.assertThat
 
 class BaggagesTest {
 
-    static def BAG_NUMBER = "0001"
-    static def ENTRY_POINT = "A1"
-    static def FLIGHT_ID = "UA17"
-    static def INPUT_FORMAT = "%s %s %s"
-    static def FLIGHT_GATE = "A11"
+    def BAG_NUMBER = "0001"
+    def ENTRY_POINT = "A1"
+    def FLIGHT_ID = "UA17"
+    def INPUT_FORMAT = "%s %s %s"
+    def FLIGHT_GATE = "A11"
 
     def baggages
     def conveyorSystem

@@ -12,11 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat
 
 class ConveyorSystemTest {
 
-    static def NODE_A = "A"
-    static def NODE_B = "B"
-    static def NODE_C = "C"
-    static def TRAVEL_TIME = 10
-    static def INPUT_FORMAT = "%s %s %d"
+    def NODE_A = "A"
+    def NODE_B = "B"
+    def NODE_C = "C"
+    def TRAVEL_TIME = 10
+    def INPUT_FORMAT = "%s %s %d"
 
     def conveyorSystem
 
