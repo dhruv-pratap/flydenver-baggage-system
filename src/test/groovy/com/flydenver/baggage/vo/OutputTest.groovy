@@ -56,8 +56,10 @@ class OutputTest {
         def optimalRoutes = output.getOptimalRoutes()
         output.printOptimalRoutes()
 
-        input.getBaggages().getBags().size().times {
-            assertThat(optimalRoutes[it].toString()).isEqualTo(EXPECTED_OUTPUT[it])
+        def bags = input.getBaggages().getBags()
+        bags.size().times {
+            assertThat(optimalRoutes.keySet()[it]).isEqualTo(bags[it])
+            assertThat(optimalRoutes.values()[it].toString()).isEqualTo(EXPECTED_OUTPUT[it])
         }
     }
 }
