@@ -11,10 +11,9 @@ import org.junit.Test
 import static com.flydenver.baggage.aggregate.Baggages.parse
 import static java.lang.Long.valueOf
 import static java.lang.String.format
-import static java.util.Arrays.asList
 import static org.assertj.core.api.Assertions.assertThat
 
-class BaggagesGroovyTest {
+class BaggagesTest {
 
     static def BAG_NUMBER = "0001"
     static def ENTRY_POINT = "A1"
@@ -47,7 +46,7 @@ class BaggagesGroovyTest {
     @Test
     public void shouldParseMultiLineFormattedInput() throws Exception {
         def multiLineFormattedInput = format(INPUT_FORMAT, BAG_NUMBER, ENTRY_POINT, FLIGHT_ID)
-        def baggages = parse(asList(multiLineFormattedInput), conveyorSystem, flightSchedules)
+        def baggages = parse([multiLineFormattedInput], conveyorSystem, flightSchedules)
         assertThat(baggages.getBags()).hasSize(1)
     }
 }
