@@ -33,20 +33,20 @@ class BaggagesTest {
     }
 
     @Test
-    public void flightSetShouldBeImmutable() throws Exception {
+    public void shouldHaveImmutableFlightSet() throws Exception {
         baggages.getBags().clear()
         assertThat(baggages.getBags()).isNotNull().isNotEmpty()
     }
 
     @Test(expected = DuplicateBagException.class)
-    public void addingDuplicateBagInformationShouldThrowException() throws Exception {
+    public void shouldThrowExceptionWhenDuplicateBagInformationIsAdded() throws Exception {
         baggages.addBag(new Bag(valueOf(BAG_NUMBER), new Node(ENTRY_POINT), new Flight(id: FLIGHT_ID)))
     }
 
     @Test
     public void shouldParseMultiLineFormattedInput() throws Exception {
-        def multiLineFormattedInput = format(INPUT_FORMAT, BAG_NUMBER, ENTRY_POINT, FLIGHT_ID)
-        def baggages = parse([multiLineFormattedInput], conveyorSystem, flightSchedules)
+        def multiLineFormattedInput = [format(INPUT_FORMAT, BAG_NUMBER, ENTRY_POINT, FLIGHT_ID)]
+        def baggages = parse(multiLineFormattedInput, conveyorSystem, flightSchedules)
         assertThat(baggages.getBags()).hasSize(1)
     }
 }
