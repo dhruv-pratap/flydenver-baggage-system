@@ -7,15 +7,15 @@ import static com.flydenver.baggage.entity.Conveyor.parse;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConveyorTest {
+class ConveyorTest {
 
-    private static final String START_NODE = "A5";
-    private static final String END_NODE = "A10";
-    private static final int TRAVEL_TIME = 4;
+    def START_NODE = "A5";
+    def END_NODE = "A10";
+    def TRAVEL_TIME = 4;
 
     @Test
     public void shouldParseFormattedStringIntoConveyerObject() throws Exception {
-        Conveyor conveyor = parse(format("%s %s %d", START_NODE, END_NODE, TRAVEL_TIME));
+        def conveyor = parse(format("%s %s %d", START_NODE, END_NODE, TRAVEL_TIME));
         assertThat(conveyor.getStartNode().getId()).isEqualTo(START_NODE);
         assertThat(conveyor.getEndNode().getId()).isEqualTo(END_NODE);
         assertThat(conveyor.getTravelTime()).isEqualTo(TRAVEL_TIME);
